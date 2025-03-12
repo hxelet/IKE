@@ -10,3 +10,10 @@ packet_t* pkt_create(ip4_addr src, ip4_addr dst, buffer_t* data) {
 
 	return self;
 }
+
+bool pkt_free(packet_t* self) {
+	buf_free(self->data);
+	free(self);
+
+	return true;
+}

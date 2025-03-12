@@ -14,5 +14,6 @@ typedef struct {
 }packet_t;
 
 packet_t* pkt_create(ip4_addr src, ip4_addr dst, buffer_t* data);
+bool			pkt_free(packet_t* self);
 
 #endif //__NETYPE_H__
