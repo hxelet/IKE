@@ -1,10 +1,15 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
+#include <pthread.h>
+
 #include "linked_list.h"
 
 typedef struct {
 	linked_list_t		body;
+
+  pthread_mutex_t   mutex;
+  pthread_cond_t    cond;
 }queue_t;
 
 queue_t*	que_create();
