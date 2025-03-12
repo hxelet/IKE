@@ -11,7 +11,10 @@ OBJS := $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
 
 TARGET = $(BUILD_DIR)/ike
 
-all: $(TARGET)
+all: build
+
+build:
+	bear -- make $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -o $@ $^
