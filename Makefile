@@ -21,7 +21,7 @@ $(TARGET): $(OBJS)
 
 $(BUILD_DIR)/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCUDE_DIRS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c -o $@ $<
 
 clean:
 	rm -rf $(BUILD_DIR)
@@ -29,4 +29,4 @@ clean:
 run: $(TARGET)
 	./$(TARGET)
 
-.PHONY: all clean run
+.PHONY: all clean run build
