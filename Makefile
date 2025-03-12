@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-SRC_DIRS = utils
+SRC_DIRS = utils core network
 BUILD_DIR = .build
 INCLUDE_DIRS = $(addprefix -I, $(SRC_DIRS))
 
