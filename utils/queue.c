@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-queue_t* que_create()
-{
+queue_t* que_create() {
 	queue_t* self = calloc(1, sizeof(queue_t));
 	self->body.length = 0;
 	self->body.first = self->body.last = NULL;
@@ -11,8 +10,7 @@ queue_t* que_create()
 	return self;
 }
 
-bool que_free(queue_t* self)
-{
+bool que_free(queue_t* self) {
 	if(self == NULL) {
 		printf("[QUE] queue is NULL\n");
 		return false;
@@ -24,8 +22,7 @@ bool que_free(queue_t* self)
 	return true;
 }
 
-bool que_enque(queue_t* self, void* data)
-{
+bool que_enque(queue_t* self, void* data) {
 	// errors
 	if(self == NULL) {
 		printf("[QUE] queue is NULL\n");
@@ -39,13 +36,12 @@ bool que_enque(queue_t* self, void* data)
 	return llt_insert_at_first(&self->body, data);
 }
 
-bool que_deque(queue_t* self, void** dest)
-{
+void* que_deque(queue_t* self) {
 	// errors
 	if(self == NULL) {
 		printf("[QUE] queue is NULL\n");
-		return false;
+		return NULL;
 	}
 
-	return llt_delete_at_last(&self->body, dest);
+	return llt_delete_at_last(&self->body);
 }

@@ -11,6 +11,6 @@ queue_t*	que_create();
 
 bool			que_free(queue_t* self);
 bool			que_enque(queue_t* self, void* data);
-bool			que_deque(queue_t* self, void** dest);
+void*			que_deque(queue_t* self);
 
 #endif //__QUEUE_H__

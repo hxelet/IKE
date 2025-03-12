@@ -10,24 +10,21 @@ struct linked_list_node_t {
 	linked_list_node_t* next;
 };
 
-linked_list_t* llt_create()
-{
+linked_list_t* llt_create() {
 	linked_list_t* self = calloc(1, sizeof(linked_list_t));
 	self->length = 0;
 
 	return self;
 }
 
-linked_list_node_t* llt_node_create(void* data)
-{
+linked_list_node_t* llt_node_create(void* data) {
 	linked_list_node_t* node = calloc(1, sizeof(linked_list_node_t));
 	node->data = data;
 
 	return node;
 }
 
-bool llt_insert(linked_list_t* self, void* data, int position)
-{
+bool llt_insert(linked_list_t* self, void* data, int position) {
 	// errors
 	if(self == NULL) {
 		printf("[LLT] llt is NULL\n");
@@ -78,20 +75,19 @@ bool llt_insert(linked_list_t* self, void* data, int position)
 	return true;
 }
 
-bool llt_delete(linked_list_t* self, void* dest, int position)
-{
+void* llt_delete(linked_list_t* self, int position) {
 	// errors
 	if(self == NULL) {
 		printf("[LLT] llt is NULL\n");
-		return false;
+		return NULL;
 	}
 	if(self->length == 0) {
 		printf("[LLT] llt is empty\n");
-		return false;
+		return NULL;
 	}
 	if(position < 0 || position > self->length) {
 		printf("[LLT] position value is wrong(%d)\n", position);
-		return false;
+		return NULL;
 	}
 
 	linked_list_node_t* cur = NULL;
@@ -119,20 +115,13 @@ bool llt_delete(linked_list_t* self, void* dest, int position)
 		cur->next->prev = cur->prev;
 	}
 
-	if(dest) {
-		int size = sizeof(cur->data);
-		size = (sizeof(dest) < size)? sizeof(dest): size;
-		memcpy(dest, cur->data, size);
-	}
-	else
-		free(cur->data);
+	void* ret = cur->data;
 	free(cur);
 	self->length--;
-	return true;
+	return ret;
 }
 
-bool llt_free(linked_list_t* self)
-{
+bool llt_free(linked_list_t* self) {
 	if(self == NULL) {
 		printf("[LLT] llt is NULL\n");
 		return false;
