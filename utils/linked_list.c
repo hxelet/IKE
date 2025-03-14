@@ -1,7 +1,8 @@
-#include "linked_list.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "linked_list.h"
 
 typedef struct linked_list_node_t linked_list_node_t;
 struct linked_list_node_t {
@@ -137,4 +138,37 @@ bool llt_free(linked_list_t* self) {
 
 	free(self);
 	return true;
+}
+
+bool llt_travel_reset(linked_list_t* self) {
+	// errors
+	if(self == NULL) {
+		printf("[LLT] llt is NULL\n");
+		return false;
+	}
+
+	self->current = self->first;
+
+	return true;
+}
+
+void* llt_travel(linked_list_t* self) {
+	// errors
+	if(self == NULL) {
+		printf("[LLT] llt is NULL\n");
+		return false;
+	}
+	if(self->length == 0) {
+		printf("[LLT] empty llt\n");
+		return false;
+	}
+
+	void* ret = NULL;
+	if(self->current) {
+		linked_list_node_t* node = self->current;
+		ret = node->data;
+		self->current = node->next;
+	}
+
+	return ret;
 }
