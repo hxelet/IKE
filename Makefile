@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -lconfig
+CFLAGS = -Wall -Wextra -Wno-unused-command-line-argument -g -lconfig -I/opt/homebrew/include
+LDFLAGS = -L/opt/homebrew/lib
 
 SRC_DIRS = utils core network sa
 BUILD_DIR = .build
@@ -17,7 +18,7 @@ build:
 	bear -- make $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDE_DIRS) -o $@ $^
 
 $(BUILD_DIR)/%.o: %.c
 	mkdir -p $(dir $@)
