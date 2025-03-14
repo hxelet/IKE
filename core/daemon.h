@@ -1,16 +1,27 @@
 #ifndef __DAEMON_H__
 #define __DAEMON_H__
 
+#include <pthread.h>
+
 #include "network.h"
 #include "sa_manager.h"
+
+#define THREAD_MAX 10
 
 typedef struct {
 	network_t*		net;
 	sa_manager_t* sam;
+
+	struct {
+		pthread_t id;
+		bool			is_running;
+	}threads[THREAD_MAX];
 }daemon_t;
 
 extern daemon_t DMN;
 
 void daemon_create();
+void running();
+bool push_job(void* (*func)(void*));
 
 #endif //__DAEMON_H__
