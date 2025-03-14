@@ -14,15 +14,17 @@ network_t* net_create() {
 
 	self->sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if(self->sock < 0) {
-		printf("[NET] Failed create socket");
+		printf("[NET] Failed create socket\n");
 		return NULL;
 	}
 
 	// for get IP_PKTINFO
 	int opt = 1;
 	setsockopt(self->sock, IPPROTO_IP, IP_PKTINFO, &opt, sizeof(opt));
+	printf("[NET] Created socket\n");
 
-	printf("[NET] Created socket");
+	push_job(net_sending);
+	push_job(net_receiving);
 
 	return self;
 }
@@ -42,7 +44,8 @@ buffer_t* net_recv(ip4_addr* src, ip4_addr* dst) {
 }
 
 void* net_receiving(void* arg) {
-	network_t* net = arg;
+	int index = *(int*)arg;
+	DMN.threads[index].is_running = true;
 	struct sockaddr_in addr, client;
 	int recv_len;
 	char buf[1024];
@@ -53,11 +56,12 @@ void* net_receiving(void* arg) {
 	struct in_pktinfo *pktinfo;
 
 	addr.sin_family = AF_INET;
-	addr.sin_port = net->port;
+	addr.sin_port = DMN.net->port;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if(bind(net->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+	if(bind(DMN.net->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
 		printf("[NET] Failed bind socket\n");
+		DMN.threads[index].is_running = false;
 		return NULL;
 	}
 
@@ -72,7 +76,7 @@ void* net_receiving(void* arg) {
 	msg.msg_flags = 0;
 
 	while(1) {
-		recv_len = recvmsg(net->sock, &msg, 0);
+		recv_len = recvmsg(DMN.net->sock, &msg, 0);
 		if(recv_len) {
 			for(cm = CMSG_FIRSTHDR(&msg); cm != NULL;
 					cm = CMSG_NXTHDR(&msg, cm)) {
@@ -86,26 +90,30 @@ void* net_receiving(void* arg) {
 							pktinfo->ipi_addr.s_addr,
 							data
 							);
-					que_enque(net->recv_que, packet);
+					que_enque(DMN.net->recv_que, packet);
 					break;
 				}
 			}
 		}
 	}
+	DMN.threads[index].is_running = false;
 }
 
 void* net_sending(void* arg) {
-	network_t* net = arg;
+	int index = *(int*)arg;
+	DMN.threads[index].is_running = true;
 	struct sockaddr_in addr;
 
 	addr.sin_family = AF_INET;
-	addr.sin_port = net->port;
+	addr.sin_port = DMN.net->port;
 
 	while(1) {
-		packet_t* packet = que_deque(net->send_que);
+		packet_t* packet = que_deque(DMN.net->send_que);
 		addr.sin_addr.s_addr = packet->dst;
 
-		sendto(net->sock, packet->data->data+packet->data->offset, packet->data->size, 0, (struct sockaddr*)&addr, sizeof(addr));
+		sendto(DMN.net->sock, packet->data->data+packet->data->offset, packet->data->size, 0, (struct sockaddr*)&addr, sizeof(addr));
 		pkt_free(packet);
 	}
+
+	DMN.threads[index].is_running = false;
 }
