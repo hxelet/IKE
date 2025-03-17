@@ -3,6 +3,9 @@
 #include <libconfig.h>
 
 #include "config.h"
+#include "log.h"
+
+static const char* module="CNF";
 
 configure_t* cnf_parse(const char* filename, int* count) {
 	configure_t* self = NULL;
@@ -10,8 +13,10 @@ configure_t* cnf_parse(const char* filename, int* count) {
 	config_setting_t *left, *right;
 	const char* buf;
 
+	config_init(&cf);
+
 	if(!config_read_file(&cf, filename)) {
-		printf("Failed read config file\n");
+		logging(LL_ERR, module, "Failed read config file");
 		config_destroy(&cf);
 		return NULL;
 	}
@@ -22,26 +27,34 @@ configure_t* cnf_parse(const char* filename, int* count) {
 
 		self = calloc(*count, sizeof(configure_t));
 		for(int i = 0; i < *count; i++) {
+			logging(LL_DBG, module, "[peer %d] Parsing started", i+1);
 			config_setting_t* cf_p = config_setting_get_elem(peers, i);
 
 			left = config_setting_lookup(cf_p, "local");
 			if(left != NULL) {
-				if(config_setting_lookup_string(left, "ip", &buf))
+				logging(LL_DBG, module, "  [local]");
+				if(config_setting_lookup_string(left, "ip", &buf)) {
 					self[i].local.addr = net_stoa(buf);
+					logging(LL_DBG, module, "    ip: %s", buf);
+				}
 			}
 
 			right = config_setting_lookup(cf_p, "remote");
 			if(right != NULL) {
-				if(config_setting_lookup_string(right, "ip", &buf))
+				logging(LL_DBG, module, "  [remote]");
+				if(config_setting_lookup_string(right, "ip", &buf)) {
 					self[i].remote.addr = net_stoa(buf);
+					logging(LL_DBG, module, "    ip: %s", buf);
+				}
 			}
 
 			if(config_setting_lookup_string(cf_p, "secret", &buf)) {
 				self[i].secret = calloc(strlen(buf), sizeof(char));
 				memcpy(self[i].secret, buf, strlen(buf));
+				logging(LL_DBG, module, "  secret: %s", self[i].secret);
 			}
 
-			printf("[CNF] Parsed peer %d\n", i+1);
+			logging(LL_DBG, module, "Parsing finished", i+1);
 		}
 	}
 

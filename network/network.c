@@ -88,7 +88,6 @@ void* net_receiving(void* arg) {
 							pktinfo->ipi_addr.s_addr,
 							data
 							);
-					logging(LL_DBG, module, "Recived packet");
 					que_enque(DMN.net->recv_que, packet);
 					break;
 				}

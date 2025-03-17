@@ -21,6 +21,7 @@ bool sam_setup_by_config(sa_manager_t* self, const char* filename) {
 		sa->local.addr = cnf[i].local.addr;
 		sa->remote.addr = cnf[i].remote.addr;
 		llt_insert_at_last(&self->sas, sa);
+		logging(LL_INFO, module, "SA %d created", i+1);
 	}
 
 	return true;
