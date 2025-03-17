@@ -10,4 +10,6 @@ typedef struct {
 sa_manager_t*		sam_create();
 bool						sam_setup_by_config(sa_manager_t* self, const char* filename);
 
+void*						sam_running(void* arg);
+
 #endif //__SA_MANAGER_H__
