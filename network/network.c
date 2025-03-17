@@ -10,8 +10,7 @@ network_t* net_create() {
 	self->recv_que = que_create();
 	self->send_que = que_create();
 
-	self->port = htons(500);
-
+	self->port = 500;
 	self->sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if(self->sock < 0) {
 		printf("[NET] Failed create socket\n");
@@ -44,8 +43,7 @@ buffer_t* net_recv(ip4_addr* src, ip4_addr* dst) {
 }
 
 void* net_receiving(void* arg) {
-	int index = *(int*)arg;
-	DMN.threads[index].is_running = true;
+	(void)arg;
 	struct sockaddr_in addr, client;
 	int recv_len;
 	char buf[1024];
@@ -56,12 +54,11 @@ void* net_receiving(void* arg) {
 	struct in_pktinfo *pktinfo;
 
 	addr.sin_family = AF_INET;
-	addr.sin_port = DMN.net->port;
+	addr.sin_port = htons(DMN.net->port);
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if(bind(DMN.net->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
 		printf("[NET] Failed bind socket\n");
-		DMN.threads[index].is_running = false;
 		return NULL;
 	}
 
@@ -90,18 +87,17 @@ void* net_receiving(void* arg) {
 							pktinfo->ipi_addr.s_addr,
 							data
 							);
+					printf("Recived packet\n");
 					que_enque(DMN.net->recv_que, packet);
 					break;
 				}
 			}
 		}
 	}
-	DMN.threads[index].is_running = false;
 }
 
 void* net_sending(void* arg) {
-	int index = *(int*)arg;
-	DMN.threads[index].is_running = true;
+	(void)arg;
 	struct sockaddr_in addr;
 
 	addr.sin_family = AF_INET;
@@ -115,5 +111,4 @@ void* net_sending(void* arg) {
 		pkt_free(packet);
 	}
 
-	DMN.threads[index].is_running = false;
 }

@@ -14,7 +14,7 @@ typedef struct {
 
 	struct {
 		pthread_t id;
-		bool			is_running;
+		void*			(*func)(void *);
 	}threads[THREAD_MAX];
 }daemon_t;
 
