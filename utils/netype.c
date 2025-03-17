@@ -31,9 +31,10 @@ ip4_addr net_stoa(const char* ipstr) {
 }
 
 char* net_atos(ip4_addr addr) {
-	char* ret = calloc(4*3+4, sizeof(char));
+	int len = 4*3+4;
+	char* ret = calloc(len, sizeof(char));
 
-	snprintf(ret, sizeof(ret), "%u.%u.%u.%u",
+	snprintf(ret, len, "%u.%u.%u.%u",
 			(addr) & 0xFF,
 			(addr>>8) & 0xFF,
 			(addr>>16) & 0xFF,

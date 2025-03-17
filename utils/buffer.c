@@ -49,7 +49,7 @@ bool buf_write(buffer_t* self, void* data, size_t size, bool reverse)
 	else {
 		if(reverse) {
 			uint8_t* s = data + size - 1;
-			for(int i = 0; i < size; i++) {
+			for(size_t i = 0; i < size; i++) {
 				*dest = *s;
 				dest++;
 				s--;
@@ -80,7 +80,7 @@ bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse)
 		uint8_t* d = dest;
 		if(reverse) {
 			uint8_t* s = self->data + self->offset + size - 1;
-			for(int i = 0; i < size; i++) {
+			for(size_t i = 0; i < size; i++) {
 				*d = *s;
 				d++;
 				s--;
