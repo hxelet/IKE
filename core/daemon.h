@@ -5,12 +5,14 @@
 
 #include "network.h"
 #include "sa_manager.h"
+#include "log.h"
 
 #define THREAD_MAX 10
 
 typedef struct {
 	network_t*		net;
 	sa_manager_t* sam;
+	log_t*				log;
 
 	struct {
 		pthread_t id;

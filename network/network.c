@@ -1,9 +1,10 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <arpa/inet.h>
 
 #include "network.h"
 #include "daemon.h"
+
+static const char* module="NET";
 
 network_t* net_create() {
 	network_t* self = calloc(1, sizeof(network_t));
@@ -13,14 +14,14 @@ network_t* net_create() {
 	self->port = 500;
 	self->sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if(self->sock < 0) {
-		printf("[NET] Failed create socket\n");
+		logging(LL_ERR, module, "Failed create socket");
 		return NULL;
 	}
 
 	// for get IP_PKTINFO
 	int opt = 1;
 	setsockopt(self->sock, IPPROTO_IP, IP_PKTINFO, &opt, sizeof(opt));
-	printf("[NET] Created socket\n");
+	logging(LL_INFO, module, "Created socket");
 
 	push_job(net_sending);
 	push_job(net_receiving);
@@ -58,7 +59,7 @@ void* net_receiving(void* arg) {
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if(bind(DMN.net->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-		printf("[NET] Failed bind socket\n");
+		logging(LL_ERR, module, "Failed bind socket");
 		return NULL;
 	}
 
@@ -87,7 +88,7 @@ void* net_receiving(void* arg) {
 							pktinfo->ipi_addr.s_addr,
 							data
 							);
-					printf("Recived packet\n");
+					logging(LL_DBG, module, "Recived packet");
 					que_enque(DMN.net->recv_que, packet);
 					break;
 				}
