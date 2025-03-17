@@ -4,8 +4,9 @@
 
 buffer_t* buf_create(size_t capacity)
 {
-	buffer_t* self = calloc(capacity, sizeof(buffer_t));
+	buffer_t* self = calloc(1, sizeof(buffer_t));
 	self->capacity = capacity;
+	self->data = calloc(capacity, sizeof(uint8_t));
 
 	return self;
 }
