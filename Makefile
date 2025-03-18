@@ -1,11 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-command-line-argument -g
-LDFLAGS = -L/opt/homebrew/lib -lconfig
+LDFLAGS = -lconfig
 
 SRC_DIRS = utils core network sa log
 BUILD_DIR = .build
 INCLUDE_DIRS = $(addprefix -I, $(SRC_DIRS))
-INCLUDE_DIRS += -I/opt/homebrew/include
 
 SRCS = $(wildcard $(addsuffix /*.c, $(SRC_DIRS))) main.c
 OBJS = $(SRCS:.c=.o)
