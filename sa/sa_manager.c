@@ -49,6 +49,7 @@ void* sam_running(void* arg) {
 					sa = llt_travel(sas)) {
 				if(dst == sa->local.addr && src == sa->remote.addr) {
 					logging(LL_INFO, module, "matched!", buf->size);
+					sa_process(sa, buf);
 					break;
 				}
 			}

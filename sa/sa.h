@@ -11,4 +11,6 @@ typedef struct {
 
 sa_t*		sa_create();
 
+void		sa_process(sa_t* self, buffer_t* buf);
+
 #endif //__SA_H__
