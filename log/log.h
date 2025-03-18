@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 
+#include "buffer.h"
+
 typedef enum {
 	LT_STD,
 	LT_SYSLOG,
@@ -24,5 +26,7 @@ typedef struct {
 
 log_t*	log_create();
 void		logging(LOG_LEVEL level, const char* module, const char* fmt, ...);
+void		logging_buf(LOG_LEVEL level, const char* module, buffer_t* buf);
+void		logging_hex(LOG_LEVEL level, const char* module, void* data, int size);
 
 #endif //__LOG_H__
