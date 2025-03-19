@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "buffer.h"
+#include "linked_list.h"
 
 typedef enum {
   PT_NO = 0,
@@ -40,9 +41,9 @@ typedef struct {
   size_t            rule_count;
 }payload_t;
 
-bool				pld_pack(payload_t* self, buffer_t* dst);
-payload_t*	pld_unpack(buffer_t* src, payload_type type);
+bool						pld_pack(payload_t* self, buffer_t* dst);
+linked_list_t*	pld_unpack(buffer_t* src);
 
-char*       pld_type_string(payload_type type);
+char*						pld_type_string(payload_type type);
 
 #endif //__PAYLOAD_H__

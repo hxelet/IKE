@@ -3,6 +3,7 @@
 #include "sa.h"
 #include "log.h"
 #include "payload.h"
+#include "header_payload.h"
 
 static const char* module="SA";
 
@@ -13,6 +14,8 @@ sa_t* sa_create() {
 }
 
 void sa_process(sa_t* self, buffer_t* buf) {
-	payload_t* hdr = pld_unpack(buf, PT_HDR);
+	linked_list_t* plds = pld_unpack(buf);
+	//header_payload_t* hdr = pld->body;
+	//logging(LL_DBG, module, "next: %s", pld_type_string(hdr->next_payload));
 }
 
