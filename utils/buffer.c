@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-buffer_t* buf_create(size_t capacity)
-{
+buffer_t* buf_create(size_t capacity) {
 	buffer_t* self = calloc(1, sizeof(buffer_t));
 	self->capacity = capacity;
 	self->data = calloc(capacity, sizeof(uint8_t));
@@ -11,15 +10,13 @@ buffer_t* buf_create(size_t capacity)
 	return self;
 }
 
-bool buf_free(buffer_t* self)
-{
+bool buf_free(buffer_t* self) {
 	free(self->data);
 	free(self);
 	return true;
 }
 
-bool buf_write(buffer_t* self, void* data, size_t size, bool reverse)
-{
+bool buf_write(buffer_t* self, void* data, size_t size, bool reverse) {
 	// errors
 	if(self == NULL) {
 		printf("[BUF] buf is NULL\n");
@@ -64,8 +61,7 @@ bool buf_write(buffer_t* self, void* data, size_t size, bool reverse)
 	return true;
 }
 
-bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse)
-{
+bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse) {
 	// errors
 	if(self == NULL) {
 		printf("[BUF] buf is NULL\n");
@@ -89,8 +85,6 @@ bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse)
 		else
 			memcpy(dest, self->data + self->offset, size);
 	}
-	else
-		memset(dest, 0, size);
 
 	self->offset += size;
 	self->size -= size;
@@ -99,4 +93,13 @@ bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse)
 		self->offset = 0;
 
 	return true;
+}
+
+bool buf_is_empty(buffer_t* self) {
+	// errors
+	if(self == NULL) {
+		printf("[BUF] buf is NULL\n");
+		return true;
+	}
+	return (self->size == 0);
 }

@@ -29,4 +29,6 @@ bool			buf_free(buffer_t* self);
 bool			buf_write(buffer_t* self, void* data, size_t size, bool reverse);
 bool			buf_read(buffer_t* self, void* dest, size_t size, bool reverse);
 
+bool			buf_is_empty(buffer_t* self);
+
 #endif //__BUFFER_H__
