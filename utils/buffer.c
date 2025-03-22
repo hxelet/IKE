@@ -1,6 +1,9 @@
-#include "buffer.h"
-#include <stdio.h>
 #include <string.h>
+
+#include "buffer.h"
+#include "log.h"
+
+static const char* module="BUF";
 
 buffer_t* buf_create(size_t capacity) {
 	buffer_t* self = calloc(1, sizeof(buffer_t));
@@ -16,14 +19,14 @@ bool buf_free(buffer_t* self) {
 	return true;
 }
 
-bool buf_write(buffer_t* self, void* data, size_t size, bool reverse) {
+bool _buf_write(buffer_t* self, void* data, size_t size, bool reverse) {
 	// errors
 	if(self == NULL) {
-		printf("[BUF] buf is NULL\n");
+		logging(LL_ERR, module, "buf is NULL");
 		return false;
 	}
 	if(size == 0) {
-		printf("[BUF] write size is wrong \n");
+		logging(LL_ERR, module, "write size is wrong");
 		return false;
 	}
 
@@ -61,14 +64,14 @@ bool buf_write(buffer_t* self, void* data, size_t size, bool reverse) {
 	return true;
 }
 
-bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse) {
+bool _buf_read(buffer_t* self, void* dest, size_t size, bool reverse) {
 	// errors
 	if(self == NULL) {
-		printf("[BUF] buf is NULL\n");
+		logging(LL_ERR, module, "buf is NULL");
 		return false;
 	}
 	if(size == 0 || size > self->size) {
-		printf("[BUF] read size is wrong \n");
+		logging(LL_ERR, module, "write size is wrong");
 		return false;
 	}
 
@@ -98,8 +101,21 @@ bool buf_read(buffer_t* self, void* dest, size_t size, bool reverse) {
 bool buf_is_empty(buffer_t* self) {
 	// errors
 	if(self == NULL) {
-		printf("[BUF] buf is NULL\n");
+		logging(LL_ERR, module, "buf is NULL");
 		return true;
 	}
 	return (self->size == 0);
+}
+
+bool buf_merge(buffer_t* self, buffer_t* src, bool is_src_free) {
+	if(!_buf_write(self, src->data + src->offset, src->size, false)) {
+		logging(LL_ERR, module, "Failed buffer merge");
+		return false;
+	}
+	if(is_src_free)
+		buf_free(src);
+	else
+		src->offset = src->size = 0;
+
+	return true;
 }
