@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-command-line-argument -g
 LDFLAGS = -lconfig
 
-SRC_DIRS = utils core network sa log payloads
+SRC_DIRS = utils core network sa log payloads exchange
 BUILD_DIR = .build
 INCLUDE_DIRS = $(addprefix -I, $(SRC_DIRS))
 

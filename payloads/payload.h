@@ -1,10 +1,8 @@
 #ifndef __PAYLOAD_H__
 #define __PAYLOAD_H__
 
-#include <stdlib.h>
 #include <stdbool.h>
 #include "buffer.h"
-#include "linked_list.h"
 
 typedef enum {
   PT_NO = 0,
@@ -27,22 +25,17 @@ typedef enum {
   PT_EAP = 48
 }payload_type;
 
-typedef struct {
-	size_t	offset;
-	size_t	size;
-	bool		reverse;
-}payload_rule_t;
-
-typedef struct {
-	payload_type	type;
+typedef struct payload_t payload_t;
+struct payload_t {
+	payload_type	type, next_type;
 	void*					body;
+  payload_t*    next;
+};
 
-  payload_rule_t*   rule;
-  size_t            rule_count;
-}payload_t;
+payload_t*      pld_create(payload_type type);
 
-bool						pld_pack(payload_t* self, buffer_t* dst);
-linked_list_t*	pld_unpack(buffer_t* src);
+int             pld_pack(payload_t* self, buffer_t* dst);
+payload_t*      pld_unpack(payload_type type, buffer_t* src);
 
 char*						pld_type_string(payload_type type);
 

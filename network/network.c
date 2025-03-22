@@ -81,7 +81,7 @@ void* net_receiving(void* arg) {
 				if(cm->cmsg_level == IPPROTO_IP) {
 					pktinfo = (struct in_pktinfo*)CMSG_DATA(cm);
 					buffer_t* data = buf_create(recv_len);
-					buf_write(data, buf, recv_len, false);
+					buf_write(data, buf, recv_len);
 
 					packet_t* packet = pkt_create(
 							client.sin_addr.s_addr,
