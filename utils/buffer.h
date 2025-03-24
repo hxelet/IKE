@@ -34,8 +34,10 @@ bool			_buf_write(buffer_t* self, void* data, size_t size, bool reverse);
 bool			_buf_read(buffer_t* self, void* dest, size_t size, bool reverse);
 #define buf_read(self, dest, size) _buf_read(self, dest, size, false)
 #define buf_rread(self, dest, size) _buf_read(self, dest, size, true)
+bool			buf_bread(buffer_t* self, buffer_t* dst, size_t size);
 
 bool			buf_merge(buffer_t* self, buffer_t* src, bool is_src_free);
+bool			buf_copy(buffer_t* self, buffer_t* src);
 
 bool			buf_is_empty(buffer_t* self);
 

@@ -98,6 +98,24 @@ bool _buf_read(buffer_t* self, void* dest, size_t size, bool reverse) {
 	return true;
 }
 
+bool buf_bread(buffer_t* self, buffer_t* dst, size_t size) {
+	char* tmp = calloc(size, sizeof(char));
+
+	if(!buf_read(self, tmp, size)) {
+		free(tmp);
+		return false;
+	}
+	logging_hex(LL_DBG, module, tmp, size);
+
+	if(!buf_write(dst, tmp, size)) {
+		free(tmp);
+		return false;
+	}
+
+	free(tmp);
+	return true;
+}
+
 bool buf_is_empty(buffer_t* self) {
 	// errors
 	if(self == NULL) {
@@ -116,6 +134,15 @@ bool buf_merge(buffer_t* self, buffer_t* src, bool is_src_free) {
 		buf_free(src);
 	else
 		src->offset = src->size = 0;
+
+	return true;
+}
+
+bool buf_copy(buffer_t* self, buffer_t* src) {
+	if(!_buf_write(self, src->data + src->offset, src->size, false)) {
+		logging(LL_ERR, module, "Failed buffer copy");
+		return false;
+	}
 
 	return true;
 }
