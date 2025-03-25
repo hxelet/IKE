@@ -1,4 +1,7 @@
 #include "proposal.h"
+#include "log.h"
+
+static const char* module="PPS";
 
 proposal_t* pps_create() {
 	proposal_t* self = calloc(1, sizeof(proposal_t));
@@ -51,15 +54,34 @@ proposal_t* pps_unpack(buffer_t* src) {
 		int len = 0;
 		int spi_size = 0;
 		int num_transform = 0;
+		int num_proposal = 0;
 
 		buf_read(src, &is_last, 1);
+		logging(LL_DBG, module, "- last: %d", is_last);
+
 		buf_read(src, NULL, 1);
+
 		buf_rread(src, &len, 2);
-		buf_read(src, NULL, 1);		// num_proposal
+		logging(LL_DBG, module, "- length: %d", len);
+
+		buf_read(src, &num_proposal, 1);
+		logging(LL_DBG, module, "- num of proposal: %d", num_proposal);
+
 		buf_read(src, &cur->porotocol, 1);
+		logging(LL_DBG, module, "- protocol: %d", cur->porotocol);
+
 		buf_read(src, &spi_size, 1);
+		logging(LL_DBG, module, "- spi size: %d", spi_size);
+
 		buf_read(src, &num_transform, 1);
+		logging(LL_DBG, module, "- num of transform: %d", num_transform);
+
 		buf_bread(src, cur->spi, spi_size);
+		logging(LL_DBG, module, "- spi (%d bytes)", cur->spi->size);
+		logging_buf(LL_DBG, module, cur->spi);
+
+		logging(LL_DBG, module, "");
+
 		if(num_transform > 0)
 			cur->transforms = trf_unpack(src);
 

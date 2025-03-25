@@ -23,15 +23,25 @@ int n_pld_pack(n_payload_t* self, buffer_t* dst) {
 
 n_payload_t* n_pld_unpack(int len, buffer_t* src) {
 	n_payload_t* self = n_pld_create();
-
 	int spi_size = 0;
-	buf_read(src, &self->protocol, 1);
-	buf_read(src, &spi_size, 1);
-	buf_rread(src, &self->type, 2);
-	buf_bread(src, self->spi, spi_size);
-	buf_bread(src, self->data, len - 4 - spi_size);
 
-	logging(LL_DBG, module, "type: %s", notify_type_string(self->type));
+	buf_read(src, &self->protocol, 1);
+	logging(LL_DBG, module, "- protocol: %d", self->protocol);
+
+	buf_read(src, &spi_size, 1);
+	logging(LL_DBG, module, "- spi size: %d", spi_size);
+
+	buf_rread(src, &self->type, 2);
+	logging(LL_DBG, module, "- type: %d(%s)", self->type, notify_type_string(self->type));
+
+	buf_bread(src, self->spi, spi_size);
+	logging(LL_DBG, module, "- spi (%d bytes)", self->spi->size);
+	logging_buf(LL_DBG, module, self->spi);
+
+	buf_bread(src, self->data, len - 4 - spi_size);
+	logging(LL_DBG, module, "- data (%d bytes)", self->data->size);
+	logging_buf(LL_DBG, module, self->data);
+
 
 	return self;
 }

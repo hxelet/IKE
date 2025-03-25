@@ -105,7 +105,7 @@ payload_t* pld_unpack(payload_type type, buffer_t* src) {
 	buf_read(src, &self->next_type, 1);
 	buf_read(src, NULL, 1);
 	buf_rread(src, &len, 2);
-	logging(LL_DBG, module, "%s payload", pld_type_string(type));
+	logging(LL_DBG, module, "%s payload (%d bytes)", pld_type_string(type), len);
 
 	len -= 4;
 	switch(self->type) {

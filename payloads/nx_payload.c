@@ -20,6 +20,7 @@ int nx_pld_pack(nx_payload_t* self, buffer_t* dst) {
 nx_payload_t* nx_pld_unpack(int len, buffer_t* src) {
 	nx_payload_t* self = nx_pld_create();
 	buf_bread(src, self->data, len);
+	logging(LL_DBG, module, "- nonce (%d bytes)", len);
 	logging_buf(LL_DBG, module, self->data);
 
 	return self;
