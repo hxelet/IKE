@@ -3,6 +3,7 @@
 #include "sa_payload.h"
 #include "nx_payload.h"
 #include "ke_payload.h"
+#include "n_payload.h"
 
 static const char* module="PLD";
 
@@ -19,6 +20,9 @@ payload_t* pld_create(payload_type type) {
 			break;
 		case PT_KE:
 			self->body = ke_pld_create();
+			break;
+		case PT_N:
+			self->body = n_pld_create();
 			break;
 		default: 
 			break;
@@ -50,6 +54,9 @@ int pld_pack(payload_t* self, buffer_t* dst) {
 			break;
 		case PT_KE:
 			len = ke_pld_pack(self->body, body);
+			break;
+		case PT_N:
+			len = n_pld_pack(self->body, body);
 			break;
 		default: 
 			return 0;
@@ -103,7 +110,6 @@ payload_t* pld_unpack(payload_type type, buffer_t* src) {
 	len -= 4;
 	switch(self->type) {
 		case PT_SA:
-		case PT_N:
 			buf_read(src, NULL, len);
 			break;
 		case PT_Nx:
@@ -111,6 +117,9 @@ payload_t* pld_unpack(payload_type type, buffer_t* src) {
 			break;
 		case PT_KE:
 			self->body = ke_pld_unpack(len, src);
+			break;
+		case PT_N:
+			self->body = n_pld_unpack(len, src);
 			break;
 		default: 
 			return NULL;
