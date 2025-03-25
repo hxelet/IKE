@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 
 #include "payload_list.h"
 #include "log.h"
@@ -80,4 +82,28 @@ payload_list_t* plt_unpack(payload_type type, buffer_t* src) {
 	}
 
 	return self;
+}
+
+bool _plt_has(payload_list_t* self, ...) {
+	int len = PT_EAP+1;
+	uint8_t map[len];
+	memset(map, 0, sizeof(map));
+	va_list args;
+	va_start(args, self);
+
+	for(payload_t* cur = self->first; cur != NULL; cur = cur->next) {
+		map[cur->type]++;
+	}
+
+	payload_type type = va_arg(args, payload_type);
+	while(type != PT_NO) {
+		if(map[type] == 0) {
+			va_end(args);
+			return false;
+		}
+		type = va_arg(args, payload_type);
+	}
+	va_end(args);
+
+	return true;
 }
