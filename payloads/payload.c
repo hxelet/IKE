@@ -73,7 +73,7 @@ int pld_pack(payload_t* self, buffer_t* dst) {
 		buf_write(dst, &self->next, 1);
 		buf_write(dst, NULL, 1);
 		buf_rwrite(dst, &len, 2);
-		buf_merge(dst, body, false);
+		buf_merge(dst, body, true);
 	}
 
 	return len;
@@ -110,7 +110,7 @@ payload_t* pld_unpack(payload_type type, buffer_t* src) {
 	len -= 4;
 	switch(self->type) {
 		case PT_SA:
-			buf_read(src, NULL, len);
+			self->body = sa_pld_unpack(len, src);
 			break;
 		case PT_Nx:
 			self->body = nx_pld_unpack(len, src);

@@ -49,7 +49,8 @@ payload_t* plt_pop(payload_list_t* self){
 	return ret;
 }
 
-int plt_pack(payload_list_t* self, buffer_t* dst) {
+buffer_t* plt_pack(payload_list_t* self) {
+	buffer_t* dst = buf_create(0);
 	size_t len = 0;
 
 	for(payload_t* pld = self->first;
@@ -60,10 +61,10 @@ int plt_pack(payload_list_t* self, buffer_t* dst) {
 
 	if(len != dst->size) {
 		logging(LL_ERR, module, "wrong length");
-		return 0;
+		return NULL;
 	}
 
-	return len;
+	return dst;
 }
 
 payload_list_t* plt_unpack(payload_type type, buffer_t* src) {

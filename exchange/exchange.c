@@ -15,17 +15,10 @@ exchange_t* exg_create() {
 buffer_t* exg_pack(exchange_t* self) {
 	logging(LL_DBG, module, "Start Packing");
 
-	buffer_t* body = buf_create(0);
-
-	self->length = plt_pack(self->payloads, body);
-
-	if(self->length == 0) {
-		buf_free(body);
-		return NULL;
-	}
-
-	self->length += 28;
+	buffer_t* body = plt_pack(self->payloads);
+	self->length = 28 + body->size;
 	buffer_t* dst = buf_create(self->length);
+
 	/*
 													1                   2                   3
 			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
