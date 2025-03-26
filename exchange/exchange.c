@@ -73,13 +73,31 @@ exchange_t* exg_unpack(buffer_t* buf) {
 		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
 	buf_read(buf, &self->SPIi, 8);
+	logging(LL_DBG, module, "- SPIi:");
+	logging_hex(LL_DBG, module, &self->SPIi, 8);
+
 	buf_read(buf, &self->SPIr, 8);
+	logging(LL_DBG, module, "- SPIr:");
+	logging_hex(LL_DBG, module, &self->SPIr, 8);
+
 	buf_read(buf, &self->next_type, 1);
+	logging(LL_DBG, module, "- next payload: %d", self->next_type);
+
 	buf_read(buf, &self->version, 1);
+	logging(LL_DBG, module, "- version: %d", self->version);
+
 	buf_read(buf, &self->type, 1);
+	logging(LL_DBG, module, "- type: %d(%s)", self->type, exg_type_string(self->type));
+
 	buf_read(buf, &self->flags, 1);
+	logging(LL_DBG, module, "- flags: %x", self->flags);
+
 	buf_rread(buf, &self->message_id, 4);
+	logging(LL_DBG, module, "- message id: %d", self->message_id);
+
 	buf_rread(buf, &self->length, 4);
+	logging(LL_DBG, module, "- length: %d", self->length);
+
 	self->payloads = plt_unpack(self->next_type, buf);
 	if(self->payloads == NULL) {
 		return NULL;
@@ -87,4 +105,14 @@ exchange_t* exg_unpack(buffer_t* buf) {
 
 	logging(LL_DBG, module, "Finish Unpacking");
 	return self;
+}
+
+char* exg_type_string(exchange_type type) {
+	switch (type) {
+		case IKE_SA_INIT: return "IKE SA INIT";
+		case IKE_AUTH: return "IKE AUTH";
+		case CREATE_CHILD_SA: return "CREATE CHILD SA";
+		case INFORMATIONAL: return "INFORMATIONAL";
+		default: return "WTF!";
+	}
 }
