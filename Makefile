@@ -2,11 +2,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-command-line-argument -g
 LDFLAGS = -lconfig
 
-SRC_DIRS = utils core network sa log payloads exchange
+SRC_DIRS = utils core network sa payloads exchange
 BUILD_DIR = .build
 INCLUDE_DIRS = $(addprefix -I, $(SRC_DIRS))
 
-SRCS = $(wildcard $(addsuffix /*.c, $(SRC_DIRS))) main.c
+SRCS = $(wildcard $(addsuffix /*.c, $(SRC_DIRS)))
 OBJS = $(SRCS:.c=.o)
 OBJS := $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
 
@@ -15,6 +15,8 @@ ifeq ($(USER),root)
 	BEAR =
 else
 	BEAR = bear --
+	LDFLAGS += -L/opt/homebrew/lib
+	INCLUDE_DIRS += -I/opt/homebrew/include
 endif
 
 TARGET = $(BUILD_DIR)/ike
